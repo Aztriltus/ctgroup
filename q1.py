@@ -69,3 +69,4 @@ def schedule_q1(orders, number_trucks):
         number_truck.append 
 #     return(distance_list)       
 #11111111111111111111
+#JXJXJX
