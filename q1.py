@@ -27,3 +27,44 @@ def schedule_q1(orders=None, number_trucks=25):
   return
 
 schedule_q1()
+
+
+
+
+
+##########################sorting of the distance#########################
+orders = [['O001', 5.5, 3.4], ['O002', -10.0, -8.9], ['O003', -1.9, -5.6]] 
+number_trucks = 5
+def schedule_q1(orders, number_trucks):
+    distance_list = {}
+
+    for orderA in orders:
+#         distance = ((orderA[1] - 0 )**2 + (orderA[2] - 0)**2)** 0.5
+#         distance  = round(distance, 5)
+#         distance_list['Origin' + '-' + orderA[0]] = distance
+
+        for orderB in orders:
+            if orderA[0] != orderB[0]:
+                distance = ((orderA[1] - orderB[1])**2 + (orderA[2] - orderB[2])**2)** 0.5
+                distance  = round(distance, 5)
+                distance_list[orderA[0] + '-' + orderB[0]] = distance
+                
+
+    for distanceA in distance_list.copy().keys():
+        for distanceB in distance_list.copy().keys():
+            if distanceA.split('-') == distanceB.split('-')[::-1]:
+                distance_list.pop(distanceA)
+    distance_list = sorted(distance_list.items(), key=lambda x: x[1])
+    
+    print(distance_list)
+    
+    
+    
+    
+    import random 
+    route = []
+    for truck_no in range(number_trucks):
+        number_truck = []
+        
+        number_truck.append 
+#     return(distance_list)       
