@@ -28,10 +28,29 @@ def schedule_q1(orders=None, number_trucks=25):
   # Need to change to a better clustering algo
   d = cluster(orders, number_trucks)
 
-  # Testing with first group of clusters
-  all_distances = distances(d[0]) 
+  # Testing greedy 2 with first group of clusters
+  print(greedy2(d[0]))
+
+
+  return
+
+def getTotalDistanceFromTour(tour, original_orders):
+  all_distances = distances(original_orders)
+  total_distance = 0
+  # print(all_distances)
+  for i in range(len(tour)):
+    next_i = (i + 1) % (len(tour) - 1)
+    order_current = tour[i]
+    order_next = tour[next_i]
+    # print(order_current)
+    # print(order_next)
+    total_distance += all_distances[order_current][order_next]
+  return total_distance
+
+def greedy2(orders):
+  all_distances = distances(orders) 
   all_distances_copy = all_distances.copy()
-  
+
   # Variables for greedy 2
   tour = []
 
@@ -44,64 +63,50 @@ def schedule_q1(orders=None, number_trucks=25):
   del all_distances_copy['origin'][min_from_origin]
   del all_distances_copy[min_from_origin]['origin']
 
-  # Get order with shortest distance from any current tour order_ids
-  next_destination = ''
-  toured_city = ''
-  toured_city_index = -1
-  min_distance = 0
-  index = 0
-  for order in tour:
-    id = min(all_distances_copy[order], key=lambda k: all_distances_copy[order][k])
-    distance = all_distances_copy[order][id]
-    if min_distance == 0:
-      min_distance = distance
-      next_destination = id
-      toured_city_index = index
-      toured_city = order
-    elif min_distance > 0 and distance < min_distance:
-      min_distance = distance
-      next_destination = id
-      toured_city_index = index
-      toured_city = order
-    index += 1
+  while len(tour) < len(orders):
+    # Get order with shortest distance from any current tour order_ids
+    next_destination = ''
+    toured_city = ''
+    toured_city_index = -1
+    min_distance = 0
+    index = 0
+    for order in tour:
+      id = min(all_distances_copy[order], key=lambda k: all_distances_copy[order][k])
+      distance = all_distances_copy[order][id]
+      if min_distance == 0:
+        min_distance = distance
+        next_destination = id
+        toured_city_index = index
+        toured_city = order
+      elif min_distance > 0 and distance < min_distance:
+        min_distance = distance
+        next_destination = id
+        toured_city_index = index
+        toured_city = order
+      index += 1
 
-  # print(getTotalDistanceFromTour(tour, d[0]))
-  # Find the best place to insert the next destination (either left or right of toured_city)
-  tourA = tour.copy()
-  tourB = tour.copy()
-  tourA.insert(toured_city_index, next_destination)
-  tourB.insert(toured_city_index + 1, next_destination)
-  distanceA = getTotalDistanceFromTour(tourA, d[0])
-  distanceB = getTotalDistanceFromTour(tourB, d[0])
-  if distanceA < distanceB:
-    tour.insert(toured_city_index, next_destination)
-  else:
-    tour.insert(toured_city_index + 1, next_destination)
+    # print(getTotalDistanceFromTour(tour, d[0]))
+    # Find the best place to insert the next destination (either left or right of toured_city)
+    tourA = tour.copy()
+    tourB = tour.copy()
+    tourA.insert(toured_city_index, next_destination)
+    tourB.insert(toured_city_index + 1, next_destination)
+    distanceA = getTotalDistanceFromTour(tourA, orders)
+    distanceB = getTotalDistanceFromTour(tourB, orders)
+    if distanceA < distanceB:
+      tour.insert(toured_city_index, next_destination)
+    else:
+      tour.insert(toured_city_index + 1, next_destination)
+    
+    # Delete this order from both places - using key origin and using key min_from_origin
+    del all_distances_copy[toured_city][next_destination]
+    del all_distances_copy[next_destination][toured_city]
   
-  # Delete this order from both places - using key origin and using key min_from_origin
-  del all_distances_copy[toured_city][next_destination]
-  del all_distances_copy[next_destination][toured_city]
-
-  print(tour)
-  print(getTotalDistanceFromTour(tour, d[0]))
-
-  # Insert it into an array (that is sorted to determine the sequence of delivery)
-  # Repeat until all orders are in the array
-  # and return the array
-
-  return
-
-def getTotalDistanceFromTour(tour, original_orders):
-  all_distances = distances(original_orders)
-  total_distance = 0
-  for i in range(len(tour)):
-    next_i = (i + 1) % len(tour)
-    order_current = tour[i]
-    order_next = tour[next_i]
-    total_distance += all_distances[order_current][order_next]
-  return total_distance
-
-
+    print(tour)
+    print(getTotalDistanceFromTour(tour, orders))
+    
+  # Return tour without origin (which is not supposed to be there)
+  return tour[1::]
 #
 #
 # Returns dictionary 
