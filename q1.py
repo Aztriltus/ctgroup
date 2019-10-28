@@ -22,24 +22,45 @@ def list_reader(csv_file):
 #
 def schedule_q1(orders=None, number_trucks=25):
   # Remove this line when submitting
-  orders = list_reader('./orders.csv')
+  # orders = list_reader('./orders.csv')
 
   # Get clusters (dict)
   # Need to change to a better clustering algo
-  d = cluster(orders, number_trucks)
+  d = cluster(orders, number_trucks//2)
 
-  # Testing greedy 2 with first group of clusters
-  print(greedy2(d[0]))
+  # Find the best route per cluster
+  # Uses greedy2
+  total_tour = []
+  for group in d.keys():
+    total_tour.append(greedy2(d[group]))
+  print(total_tour)
 
+  # Adding orders not found in cluster
+  # Uses q1_main.py way of checking
+  # This is useful for clustering algo that do not cluster all orders
+  order_dict = {}
+  for item in orders:
+    order_dict[item[0]] = 1
+  for path in total_tour:
+    current_path = [x for x in path if x[0] ==  "O"]
+    for item in current_path:
+      if item in order_dict:
+        order_dict[item] = order_dict[item] - 1
+  not_in_cluster = []
+  for item in order_dict:
+    if order_dict[item] != 0:
+      not_in_cluster.append(item)
+  total_tour.append(not_in_cluster)
 
-  return
+  
+  return total_tour
 
 def getTotalDistanceFromTour(tour, original_orders):
   all_distances = distances(original_orders)
   total_distance = 0
   # print(all_distances)
   for i in range(len(tour)):
-    next_i = (i + 1) % (len(tour) - 1)
+    next_i = (i + 1) if (i+1) < len(tour) else 0
     order_current = tour[i]
     order_next = tour[next_i]
     # print(order_current)
@@ -84,13 +105,16 @@ def greedy2(orders):
         toured_city_index = index
         toured_city = order
       index += 1
-
-    # print(getTotalDistanceFromTour(tour, d[0]))
+    # print(all_distances_copy)
+    # print("Toured City: " + toured_city)
+    # print("Next Destination: " + next_destination)
     # Find the best place to insert the next destination (either left or right of toured_city)
     tourA = tour.copy()
     tourB = tour.copy()
     tourA.insert(toured_city_index, next_destination)
+    # print("Tour A: " + str(tourA))
     tourB.insert(toured_city_index + 1, next_destination)
+    # print("Tour B: " + str(tourB))
     distanceA = getTotalDistanceFromTour(tourA, orders)
     distanceB = getTotalDistanceFromTour(tourB, orders)
     if distanceA < distanceB:
@@ -99,13 +123,24 @@ def greedy2(orders):
       tour.insert(toured_city_index + 1, next_destination)
     
     # Delete this order from both places - using key origin and using key min_from_origin
-    del all_distances_copy[toured_city][next_destination]
-    del all_distances_copy[next_destination][toured_city]
+    # del all_distances_copy[toured_city][next_destination]
+    # del all_distances_copy[next_destination][toured_city]
+    for order in all_distances.keys():
+      try:
+        del all_distances_copy[order][next_destination]
+      except:
+        lala = ''
+    for order in tour:
+      try:
+        del all_distances_copy[next_destination][order]
+      except:
+        lala = ''
   
-    print(tour)
-    print(getTotalDistanceFromTour(tour, orders))
-    
+    # print(tour)
+    # print(getTotalDistanceFromTour(tour, orders))
+
   # Return tour without origin (which is not supposed to be there)
+  # print(tour)
   return tour[1::]
 #
 #
@@ -282,4 +317,4 @@ def get_all_distance(orders):
                 distance_list.pop(distanceA)
     return(distance_list)
     
-schedule_q1()
+# schedule_q1()
