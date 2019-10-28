@@ -161,4 +161,52 @@ def tsp(orders):
     print(distance_list)
     return distance_list
 
-schedule_q1()
+######## modfiied the get distance ###########################################################################################################
+
+
+def get_distance(orders):
+    distance_list = {}
+
+    for orderA in orders:
+        for orderB in orders:
+            if orderA[0] != orderB[0]:
+                distance = ((orderA[1] - orderB[1])**2 + (orderA[2] - orderB[2])**2)** 0.5
+                distance  = round(distance, 5)
+                distance_list[orderA[0] + '-' + orderB[0]] = distance          
+
+    for distanceA in distance_list.copy().keys():
+        for distanceB in distance_list.copy().keys():
+            if distanceA.split('-') == distanceB.split('-')[::-1]:
+                distance_list.pop(distanceA)
+    return(distance_list)
+    
+def get_origin_distance(orders):
+    distance_list = {}
+    for orderA in orders:
+        distance = ((orderA[1] - 0 )**2 + (orderA[2] - 0)**2)** 0.5
+        distance  = round(distance, 5)
+        distance_list['Origin' + '-' + orderA[0]] = distance
+
+    return(distance_list) 
+
+def get_all_distance(orders):
+    distance_list = {}
+
+    for orderA in orders:
+        distance = ((orderA[1] - 0 )**2 + (orderA[2] - 0)**2)** 0.5
+        distance  = round(distance, 5)
+        distance_list['Origin' + '-' + orderA[0]] = distance
+
+        for orderB in orders:
+            if orderA[0] != orderB[0]:
+                distance = ((orderA[1] - orderB[1])**2 + (orderA[2] - orderB[2])**2)** 0.5
+                distance  = round(distance, 5)
+                distance_list[orderA[0] + '-' + orderB[0]] = distance          
+
+    for distanceA in distance_list.copy().keys():
+        for distanceB in distance_list.copy().keys():
+            if distanceA.split('-') == distanceB.split('-')[::-1]:
+                distance_list.pop(distanceA)
+    return(distance_list)
+    
+                
