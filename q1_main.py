@@ -1,5 +1,6 @@
 from utility import *
 from q1 import schedule_q1
+from pandas import *
 
 def legality_checking(truck_paths, order_list, number_trucks):
 	check_trucks(truck_paths, number_trucks)
