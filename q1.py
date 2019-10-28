@@ -26,18 +26,19 @@ def schedule_q1(orders=None, number_trucks=25):
 
   # Get clusters (dict)
   # Need to change to a better clustering algo
-  d = cluster(orders, number_trucks//2)
+  d = cluster(orders, number_trucks//6)
 
   # Find the best route per cluster
   # Uses greedy2
   total_tour = []
   for group in d.keys():
     total_tour.append(greedy2(d[group]))
-  print(total_tour)
+  # print(total_tour)
 
   # Adding orders not found in cluster
   # Uses q1_main.py way of checking
   # This is useful for clustering algo that do not cluster all orders
+  # Such as AgglomerativeClustering
   order_dict = {}
   for item in orders:
     order_dict[item[0]] = 1
@@ -105,7 +106,7 @@ def greedy2(orders):
         toured_city_index = index
         toured_city = order
       index += 1
-    # print(all_distances_copy)
+
     # print("Toured City: " + toured_city)
     # print("Next Destination: " + next_destination)
     # Find the best place to insert the next destination (either left or right of toured_city)
@@ -117,7 +118,7 @@ def greedy2(orders):
     # print("Tour B: " + str(tourB))
     distanceA = getTotalDistanceFromTour(tourA, orders)
     distanceB = getTotalDistanceFromTour(tourB, orders)
-    if distanceA < distanceB:
+    if distanceA < distanceB and toured_city_index != 0:
       tour.insert(toured_city_index, next_destination)
     else:
       tour.insert(toured_city_index + 1, next_destination)
