@@ -10,7 +10,7 @@ def list_reader(csv_file):
     return the_list
 
 def schedule_q1(orders, number_trucks):
-  orders = list_reader('./orders.csv')
+  # orders = list_reader('./orders.csv')
   cityList = []
   for order in orders:
     city = City(order[0], float(order[1]), float(order[2]))
@@ -23,9 +23,16 @@ def schedule_q1(orders, number_trucks):
     for order in d[group]:
       city = City(order[0], float(order[1]), float(order[2]))
       cityList.append(city)
-    total_tour.append(geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500))
+    route = geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=250)
+    convertedList = []
+    for order in route:
+      convertedList.append(eval(str(order)))
+    total_tour.append(convertedList)
 
-  print(total_tour)
+  # print(list(total_tour))
+  # print(type(list(total_tour)))
+  # print(type(list(total_tour)[0][0]))
+  return total_tour
   
   
 class City:
@@ -41,7 +48,7 @@ class City:
         return distance
     
     def __repr__(self):
-        return "(" + str(self.x) + "," + str(self.y) + ")"
+        return repr(self.order_id)
 
 class Fitness:
     def __init__(self, route):
@@ -170,12 +177,12 @@ def nextGeneration(currentGen, eliteSize, mutationRate):
 
 def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
     pop = initialPopulation(popSize, population)
-    print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
+    # print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
     
     for i in range(0, generations):
         pop = nextGeneration(pop, eliteSize, mutationRate)
     
-    print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
+    # print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
     bestRouteIndex = rankRoutes(pop)[0][0]
     bestRoute = pop[bestRouteIndex]
     return bestRoute
@@ -209,4 +216,4 @@ def cluster(orders, number_trucks):
   return d
 
 
-schedule_q1(None,5)
+# schedule_q1(None,5)
