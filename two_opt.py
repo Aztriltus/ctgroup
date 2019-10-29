@@ -6,11 +6,13 @@ def travel_order(orders):
     quad4 = []
 
     for order in orders:
-        if order[1] <= 0 and order[2] >= 0:
+        # print(order[1])
+        # print(order[2])
+        if float(order[1]) <= 0 and float(order[2]) >= 0:
             quad1.append(order)
-        elif order[1] > 0 and order[2] >= 0:
+        elif float(order[1]) > 0 and float(order[2]) >= 0:
             quad2.append(order)
-        elif order[1] >= 0 and order[2] < 0:
+        elif float(order[1]) >= 0 and float(order[2]) < 0:
             quad3.append(order)
         else:
             quad4.append(order)
@@ -33,14 +35,14 @@ def get_all_distance(orders):
     distance_list = {}
 
     for orderA in orders:
-        distance = ((orderA[1] - 0 )**2 + (orderA[2] - 0)**2)** 0.5
+        distance = ((float(orderA[1]) - 0 )**2 + (float(orderA[2]) - 0)**2)** 0.5
         distance  = round(distance, 5)
         distance_list['Origin' + '-' + orderA[0]] = distance
         distance_list[orderA[0] + '-' + 'Origin'] = distance
 
         for orderB in orders:
             if orderA[0] != orderB[0]:
-                distance = ((orderA[1] - orderB[1])**2 + (orderA[2] - orderB[2])**2)** 0.5
+                distance = ((float(orderA[1]) - float(orderB[1]))**2 + (float(orderA[2]) - float(orderB[2]))**2)** 0.5
                 distance  = round(distance, 5)
                 distance_list[orderA[0] + '-' + orderB[0]] = distance          
 
@@ -87,7 +89,9 @@ def schedule_q1(orders, number_trucks):
         returned_order.append(truck)
     
     del returned_order[0][0]
-        
+    for order in returned_order:
+        if len(order) == 0:
+            returned_order.remove(order)
     return(returned_order)
     
 # print(schedule_q1(orders, number_trucks))        
