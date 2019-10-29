@@ -34,25 +34,6 @@ def schedule_q1(orders=None, number_trucks=25):
   for group in d.keys():
     total_tour.append(greedy2(d[group]))
   # print(total_tour)
-
-  # Adding orders not found in cluster
-  # Uses q1_main.py way of checking
-  # This is useful for clustering algo that do not cluster all orders
-  # Such as AgglomerativeClustering
-  order_dict = {}
-  for item in orders:
-    order_dict[item[0]] = 1
-  for path in total_tour:
-    current_path = [x for x in path if x[0] ==  "O"]
-    for item in current_path:
-      if item in order_dict:
-        order_dict[item] = order_dict[item] - 1
-  not_in_cluster = []
-  for item in order_dict:
-    if order_dict[item] != 0:
-      not_in_cluster.append(item)
-  total_tour.append(not_in_cluster)
-
   
   return total_tour
 
@@ -85,7 +66,7 @@ def greedy2(orders):
   del all_distances_copy['origin'][min_from_origin]
   del all_distances_copy[min_from_origin]['origin']
 
-  while len(tour) < len(orders):
+  while len(tour) <= len(orders):
     # Get order with shortest distance from any current tour order_ids
     next_destination = ''
     toured_city = ''
