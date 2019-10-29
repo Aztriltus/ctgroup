@@ -1,9 +1,11 @@
-# Team ID??
+# Team G2T08
 # Jiang Jia Xing, Ng Zheng Hao, Ong Soon Heng
+
 import numpy as np
 import csv
 from sklearn.cluster import AgglomerativeClustering
 from pandas import *
+
 # Reads CSV 
 # Remove when submitting
 def list_reader(csv_file):
