@@ -1,4 +1,4 @@
-import numpy as np, random, operator, pandas as pd, csv, math
+import numpy as np, random, operator, copy, pandas as pd, csv, math
 from sklearn.cluster import KMeans
 def warn(*args, **kwargs):
     pass
@@ -9,7 +9,6 @@ def schedule_q1(orders, number_trucks):
   # Get groups from k-means clustering algo (using sk.learn)
   d = cluster(orders, number_trucks)
   # Get dictionary of distances for easy and fast retrieval O(1)
-  all_distances = distances(orders)
 
   # Initialise the main array
   # This will store arrays of orders
@@ -19,8 +18,9 @@ def schedule_q1(orders, number_trucks):
   # For-loop the keys gotten from clustering and 
   # Retrieve the orders from each group
   for group in d.keys():
+    all_distances = distances(d[group])
     # Use greedy for rough first estimation
-    existing_route = greedy2(d[group])
+    existing_route = greedy2(d[group], all_distances)
     best_distance = calculateTotalDistance(existing_route, all_distances)
     improved = True
     while improved:
@@ -69,19 +69,6 @@ def cluster(orders, number_trucks):
 
   return d
 
-def getTotalDistanceFromTour(tour, original_orders):
-  all_distances = distances(original_orders)
-  total_distance = 0
-  # print(all_distances)
-  for i in range(len(tour)):
-    next_i = (i + 1) if (i+1) < len(tour) else 0
-    order_current = tour[i]
-    order_next = tour[next_i]
-    # print(order_current)
-    # print(order_next)
-    total_distance += all_distances[order_current][order_next]
-  return total_distance
-
 def calculateTotalDistance(route, all_distances):
   total_distance = 0
   for i in range(len(route)):
@@ -93,9 +80,8 @@ def calculateTotalDistance(route, all_distances):
     total_distance += all_distances[order_current][order_next]
   return total_distance
 
-def greedy2(orders):
-  all_distances = distances(orders) 
-  all_distances_copy = all_distances.copy()
+def greedy2(orders, all_distances):
+  all_distances_copy = copy.deepcopy(all_distances)
 
   # Variables for greedy 2
   tour = []
@@ -140,8 +126,8 @@ def greedy2(orders):
     # print("Tour A: " + str(tourA))
     tourB.insert(toured_city_index + 1, next_destination)
     # print("Tour B: " + str(tourB))
-    distanceA = getTotalDistanceFromTour(tourA, orders)
-    distanceB = getTotalDistanceFromTour(tourB, orders)
+    distanceA = calculateTotalDistance(tourA, all_distances)
+    distanceB = calculateTotalDistance(tourB, all_distances)
     if distanceA < distanceB and toured_city_index != 0:
       tour.insert(toured_city_index, next_destination)
     else:

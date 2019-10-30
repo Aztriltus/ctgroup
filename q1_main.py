@@ -18,8 +18,8 @@ orders = list_reader(order_csv)
 location_dict = location_dict_generation([orders])
 
 truck_paths = schedule_q1(orders, number_trucks)  # call your function
-print(truck_paths)
-print(len(truck_paths))
+# print(truck_paths)
+# print(len(truck_paths))
 legality_checking(truck_paths, orders, number_trucks)
 print("Score for q1 is:", scoring_q1(truck_paths, location_dict)) # print your score
 
