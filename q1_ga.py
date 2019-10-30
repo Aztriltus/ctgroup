@@ -1,5 +1,9 @@
 import numpy as np, random, operator, pandas as pd, csv, math
 from sklearn.cluster import AgglomerativeClustering
+def warn(*args, **kwargs):
+    pass
+import warnings
+warnings.warn = warn
 
 def list_reader(csv_file):
     the_list = []
