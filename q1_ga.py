@@ -1,5 +1,5 @@
 import numpy as np, random, operator, pandas as pd, csv, math
-from sklearn.cluster import AgglomerativeClustering
+from sklearn.cluster import AgglomerativeClustering, KMeans
 def warn(*args, **kwargs):
     pass
 import warnings
@@ -27,7 +27,7 @@ def schedule_q1(orders, number_trucks):
     for order in d[group]:
       city = City(order[0], float(order[1]), float(order[2]))
       cityList.append(city)
-    route = geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=250)
+    route = geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.001, generations=300)
     convertedList = []
     for order in route:
       convertedList.append(eval(str(order)))
@@ -202,8 +202,10 @@ def cluster(orders, number_trucks):
   X = np.array(array)
 
   # Find clusters using sklearn
-  cluster = AgglomerativeClustering(n_clusters=number_trucks, affinity='euclidean', linkage='ward')
-  cluster.fit_predict(X)
+  # cluster = AgglomerativeClustering(n_clusters=number_trucks, affinity='euclidean', linkage='ward')
+  # cluster.fit_predict(X)
+  cluster = KMeans(n_clusters=math.ceil(number_trucks))
+  cluster.fit(X)
 
   # Create dictionary with
   # key=group_no and value='array of orders' 

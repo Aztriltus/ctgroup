@@ -1,5 +1,5 @@
 from utility import *
-from two_opt import schedule_q1
+from two_opt_2 import schedule_q1
 from pandas import *
 
 def legality_checking(truck_paths, order_list, number_trucks):
