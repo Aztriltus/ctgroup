@@ -86,7 +86,8 @@ def schedule_q1(orders, number_trucks):
             truck.append(location_distance_list[0][0].split('-')[0])
           
             del location_distance_list[0]  
-        returned_order.append(truck)
+        if len(truck) > 0: 
+            returned_order.append(truck)
     
     del returned_order[0][0]
     for order in returned_order:
