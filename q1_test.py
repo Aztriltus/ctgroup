@@ -58,6 +58,7 @@ for route in cityList:
                 return np.concatenate((r[0:i],r[k:-len(r)+i-1:-1],r[k+1:len(r)]))
             
             
+            
     def two_opt(cities,improvement_threshold): # 2-opt Algorithm adapted from https://en.wikipedia.org/wiki/2-opt
         cities = np.array(cities)
         route = np.arange(cities.shape[0]) # Make an array of row numbers corresponding to cities.
