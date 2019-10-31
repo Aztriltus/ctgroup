@@ -50,9 +50,9 @@ def cluster(orders, number_trucks):
   X = np.array(array)
 
   # Find clusters using sklearn
-  # cluster = AgglomerativeClustering(n_clusters=number_trucks, affinity='euclidean', linkage='ward')
+  # cluster = KMeans
   # cluster.fit_predict(X)
-  cluster = KMeans(n_clusters=math.ceil(number_trucks))
+  cluster = KMeans(n_clusters=number_trucks)
   cluster.fit(X)
 
   # Create dictionary with
@@ -179,7 +179,6 @@ def distances(orders):
 
                 # Calculate distance
                 distance = ((ax - bx)**2 + (ay - by)**2)** 0.5
-                distance  = round(distance, 5)
 
                 # For each order, find the distance
                 if orderA[0] in distance_list:
