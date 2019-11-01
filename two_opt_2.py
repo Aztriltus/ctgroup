@@ -1,3 +1,6 @@
+# Team G2T08
+# Jiang Jia Xing, Ng Zheng Hao, Ong Soon Heng
+
 import numpy as np, random, operator, copy, pandas as pd, csv, math
 from sklearn.cluster import KMeans
 def warn(*args, **kwargs):
