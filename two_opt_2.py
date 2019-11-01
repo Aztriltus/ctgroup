@@ -8,11 +8,10 @@ warnings.warn = warn
 def schedule_q1(orders, number_trucks):
   # Get groups from k-means clustering algo (using sk.learn)
   d = cluster(orders, number_trucks)
-  # Get dictionary of distances for easy and fast retrieval O(1)
 
   # Initialise the main array
   # This will store arrays of orders
-  # So for number_trucks = 25, this array should contain 25 arrays
+  # So for number_trucks = 25, this array should contain 25 arrays of orders
   all_tour = []
 
   # For-loop the keys gotten from clustering and 
@@ -22,6 +21,7 @@ def schedule_q1(orders, number_trucks):
     # Use greedy for rough first estimation
     existing_route = greedy2(d[group], all_distances)
     best_distance = calculateTotalDistance(existing_route, all_distances)
+    # Two-opt starts here
     improved = True
     while improved:
       improved = False
@@ -33,6 +33,7 @@ def schedule_q1(orders, number_trucks):
             existing_route = new_route
             best_distance = new_distance
             improved = True
+    # Add the best route in this cluster to output array
     all_tour.append(existing_route)
   return all_tour
   
@@ -139,13 +140,13 @@ def greedy2(orders, all_distances):
     for order in all_distances.keys():
       try:
         del all_distances_copy[order][next_destination]
-      except:
-        lala = ''
+      except Exception:
+        pass
     for order in tour:
       try:
         del all_distances_copy[next_destination][order]
-      except:
-        lala = ''
+      except Exception:
+        pass
   
     # print(tour)
     # print(getTotalDistanceFromTour(tour, orders))
